@@ -2,15 +2,6 @@ const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
 const path = require('path');
 
-rules.push({
-  test: /\.s[ac]ss$/i,
-  use: [
-    'style-loader',
-    'css-loader',
-    'sass-loader'
-  ]
-});
-
 module.exports = {
   module: {
     rules,

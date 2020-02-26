@@ -1,8 +1,15 @@
 .c-file-sidebar {
     padding: 20px;
     max-width: 20%;
+
     .MuiDrawer-paperAnchorLeft {
         padding: 20px;
         max-width: 20%;
+    }
+
+    .MuiTreeItem-root {
+        &:focus>.MuiTreeItem-content {
+            background-color: rgba(0, 0, 0, 0.54);
+        }
     }
 }

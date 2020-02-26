@@ -5,7 +5,10 @@ import { AppState } from '@appstate';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { DirectoryTree } from 'directory-tree';
-import './file-sidebar.scss';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DescriptionIcon from '@material-ui/icons/Description';
+import './FileSidebar.scss';
 
 export class FileSidebar extends React.Component<CssClassProps, null> {
     constructor(props?: any) {
@@ -14,7 +17,6 @@ export class FileSidebar extends React.Component<CssClassProps, null> {
 
     public async componentDidMount() {
         await AppState.initialize();
-        console.log(AppState.initialized);
         this.forceUpdate();
     }
 
@@ -35,10 +37,21 @@ export class FileSidebar extends React.Component<CssClassProps, null> {
 
     private recursivelyRenderDir(directory: DirectoryTree): JSX.Element {
         return (
-            <TreeItem nodeId={directory.path} label={directory.name}>
+            <TreeItem
+                nodeId={directory.path}
+                label={directory.name}
+                collapseIcon={<ExpandMoreIcon/>}
+                expandIcon={<ChevronRightIcon/>}
+                icon={directory.type === "directory" ? <ChevronRightIcon/> : <DescriptionIcon/>}>
                 {
                     directory.children?.map((dir: DirectoryTree) =>
-                        <TreeItem nodeId={dir.path} label={dir.name}>
+                        <TreeItem
+                            nodeId={dir.path}
+                            label={dir.name}
+                            collapseIcon={<ExpandMoreIcon/>}
+                            expandIcon={<ChevronRightIcon/>}
+                            icon={dir.type === "directory" ? <ChevronRightIcon/> : <DescriptionIcon/>}
+                            key={dir.path}>
                             {
                                 dir.children?.map(this.recursivelyRenderDir)
                             }
