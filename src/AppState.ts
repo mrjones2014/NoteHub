@@ -1,14 +1,16 @@
 import directoryTree, { DirectoryTree } from 'directory-tree';
+const { dialog } = require('electron').remote;
+import { CookieManager } from '@modules/Cookies';
 
 export interface IAppState {
     directory: DirectoryTree;
 }
 
-// TODO change this to a setting
-const filesDir = 'C:\\Users\\mjone\\git\\notehub_content';
+const ROOT_DIR_COOKIE_NAME = "NoteHub.Cookies.RootDir";
 
 class AppStateClass implements IAppState {
     private _directory: DirectoryTree;
+    private _rootDir: string;
 
     public get directory(): DirectoryTree {
         return JSON.parse(JSON.stringify(this._directory)); // return deep copy
@@ -26,8 +28,8 @@ class AppStateClass implements IAppState {
     constructor() {
         this._initialized = false;
         this.directory = {
-            path: filesDir,
-            name: filesDir,
+            path: '',
+            name: '',
             size: 0,
             type: 'directory',
             children: null
@@ -36,14 +38,36 @@ class AppStateClass implements IAppState {
 
     public async initialize(): Promise<void> {
         if (this._initialized) return;
+        if (this._rootDir == null || this._rootDir == '') {
+            await this.determineRootDir();
+        }
         await this.scanDirectory();
         this._initialized = true;
     }
 
-    private scanDirectory(dir: string = filesDir): Promise<void> {
+    public async determineRootDir(): Promise<void> {
+        const cookie = CookieManager.get(ROOT_DIR_COOKIE_NAME);
+        if (cookie == null || cookie == '') {
+            return await this.askForFolder();
+        }
+        this._rootDir = cookie;
+    }
+
+    public async askForFolder(): Promise<void> {
+        const selection = await dialog.showOpenDialog({ properties: [ 'openDirectory' ]});
+        if (selection.filePaths == null || selection.filePaths.length === 0) {
+            // TODO handle this more gracefully
+            throw 'No folder selected!';
+        }
+
+        this._rootDir = selection.filePaths[0];
+        CookieManager.set(ROOT_DIR_COOKIE_NAME, this._rootDir);
+    }
+
+    private scanDirectory(): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                this.directory = directoryTree(dir, {normalizePath: true});
+                this.directory = directoryTree(this._rootDir, {normalizePath: true});
                 resolve();
             } catch (err) {
                 reject(err);
@@ -53,6 +77,5 @@ class AppStateClass implements IAppState {
 }
 
 const appStateSingleton = new AppStateClass();
-appStateSingleton.initialize();
 
 export const AppState = appStateSingleton;

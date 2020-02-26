@@ -1,7 +1,8 @@
 import React from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { Button, CssBaseline } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 import { FileSidebar } from '@components/FileSidebar';
+import { AppState } from '@appstate';
 
 const theme = createMuiTheme({
     palette: {
@@ -14,12 +15,19 @@ export class App extends React.Component<{}, null> {
         super(props);
     }
 
+    public async componentDidMount(): Promise<void> {
+        await AppState.initialize();
+        this.forceUpdate();
+    }
+
     public render(): JSX.Element {
         return (
             <MuiThemeProvider theme={theme}>
                 <CssBaseline/>
-                <FileSidebar/>
-                <Button>Hello World!</Button>
+                {
+                    AppState.initialized &&
+                    <FileSidebar/>
+                }
             </MuiThemeProvider>
         );
     }
