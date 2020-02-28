@@ -1,14 +1,15 @@
 import directoryTree, { DirectoryTree } from 'directory-tree';
 const { dialog } = require('electron').remote;
-import { CookieManager } from '@modules/Cookies';
+import { CookieManager, Cookies } from '@modules/Cookies';
+import React from 'react';
 
 export interface IAppState {
     directory: DirectoryTree;
+    initialized: boolean;
+    initialize: () => void;
 }
 
-const ROOT_DIR_COOKIE_NAME = "NoteHub.Cookies.RootDir";
-
-class AppStateClass implements IAppState {
+export class AppStateClass implements IAppState {
     private _directory: DirectoryTree;
     private _rootDir: string;
 
@@ -40,28 +41,30 @@ class AppStateClass implements IAppState {
         if (this._initialized) return;
         if (this._rootDir == null || this._rootDir == '') {
             await this.determineRootDir();
+            if (this._rootDir == null || this._rootDir == '') {
+                return;
+            }
         }
         await this.scanDirectory();
         this._initialized = true;
     }
 
-    public async determineRootDir(): Promise<void> {
-        const cookie = CookieManager.get(ROOT_DIR_COOKIE_NAME);
+    private async determineRootDir(): Promise<void> {
+        const cookie = CookieManager.get(Cookies.RootDirPath);
         if (cookie == null || cookie == '') {
             return await this.askForFolder();
         }
         this._rootDir = cookie;
     }
 
-    public async askForFolder(): Promise<void> {
+    private async askForFolder(): Promise<void> {
         const selection = await dialog.showOpenDialog({ properties: [ 'openDirectory' ]});
         if (selection.filePaths == null || selection.filePaths.length === 0) {
-            // TODO handle this more gracefully
-            throw 'No folder selected!';
+            return;
         }
 
         this._rootDir = selection.filePaths[0];
-        CookieManager.set(ROOT_DIR_COOKIE_NAME, this._rootDir);
+        CookieManager.set(Cookies.RootDirPath, this._rootDir);
     }
 
     private scanDirectory(): Promise<void> {
@@ -79,3 +82,4 @@ class AppStateClass implements IAppState {
 const appStateSingleton = new AppStateClass();
 
 export const AppState = appStateSingleton;
+export const AppStateContext = React.createContext(AppState);

@@ -18,3 +18,7 @@ export class CookieManager {
         document.cookie = name+"=; expires="+date.toUTCString()+"; path=/";
     }
 }
+
+export enum Cookies {
+    RootDirPath = 'NoteHub.Cookies.RootDir'
+}

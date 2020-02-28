@@ -8,11 +8,13 @@ import { DirectoryTree } from 'directory-tree';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DescriptionIcon from '@material-ui/icons/Description';
+import { ReactUtils } from '@modules/ReactUtils';
 import './FileSidebar.scss';
 
-export class FileSidebar extends React.Component<CssClassProps, null> {
-    constructor(props?: any) {
+export class FileSidebar extends React.Component<CssClassProps> {
+    constructor(props: CssClassProps) {
         super(props);
+        ReactUtils.bindAll(this);
     }
 
     public async componentDidMount() {
