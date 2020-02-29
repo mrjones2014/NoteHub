@@ -1,15 +1,23 @@
 .c-file-sidebar {
     padding: 20px;
-    max-width: 20%;
+
+    &__drawer-header {
+        display: flex;
+        align-items: center;
+
+        button.MuiButtonBase-root.MuiIconButton-root {
+            margin-left: -10px;
+        }
+    }
 
     .MuiDrawer-paperAnchorLeft {
         padding: 20px;
-        max-width: 20%;
+        padding-top: 0;
     }
 
     .MuiTreeItem-root {
         &:focus>.MuiTreeItem-content {
-            background-color: rgba(0, 0, 0, 0.54);
+            background-color: rgba(135, 135, 135, 0.72)
         }
     }
 }

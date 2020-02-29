@@ -1,6 +1,7 @@
 import React from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, AppBar, Toolbar, IconButton } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 import { FileSidebar } from '@components/FileSidebar';
 import { AppState, AppStateContext } from '@appstate';
 import { SplashPage } from '@components/SplashPage';
@@ -14,9 +15,14 @@ const theme = createMuiTheme({
     },
 });
 
-export class App extends React.Component<{}, null> {
+interface LocalAppState {
+    fileSidebarOpen: boolean;
+}
+
+export class App extends React.Component<{}, LocalAppState> {
     constructor(props?: any) {
         super(props);
+        this.state = { fileSidebarOpen: true };
         ReactUtils.bindAll(this);
     }
 
@@ -39,11 +45,24 @@ export class App extends React.Component<{}, null> {
                     }
                     {
                         AppState.initialized &&
-                        <FileSidebar/>
+                        <>
+                            <AppBar position="sticky" color="default">
+                                <Toolbar>
+                                    <IconButton edge="start" onClick={this.toggleSidebar} title="Files">
+                                        <MenuIcon/>
+                                    </IconButton>
+                                </Toolbar>
+                            </AppBar>
+                            <FileSidebar open={this.state.fileSidebarOpen} onToggle={this.toggleSidebar}/>
+                        </>
                     }
                 </AppStateContext.Provider>
             </MuiThemeProvider>
         );
+    }
+
+    private toggleSidebar(): void {
+        this.setState({ fileSidebarOpen: !this.state.fileSidebarOpen });
     }
 
     private onFolderSelected(): void {
