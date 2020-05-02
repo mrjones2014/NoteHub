@@ -28,7 +28,7 @@
 
 import ReactDOM from 'react-dom';
 import React from 'react';
-import { App } from './App';
+import App from './App';
 
 const appEl = document.getElementById('app');
 ReactDOM.render(React.createElement(App), appEl);

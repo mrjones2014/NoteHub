@@ -1,85 +1,45 @@
-import directoryTree, { DirectoryTree } from 'directory-tree';
-const { dialog } = require('electron').remote;
-import { CookieManager, Cookies } from '@modules/Cookies';
-import React from 'react';
+import { Record } from "immutable";
+import { DirectoryTreeRecord } from './modules/DirectoryTreeRecord';
+import { Dispatch, SetStateAction, createContext, useContext } from 'react';
 
 export interface IAppState {
-    directory: DirectoryTree;
+    fileSidebarOpen: boolean;
+    directory: DirectoryTreeRecord;
     initialized: boolean;
-    initialize: () => void;
 }
 
-export class AppStateClass implements IAppState {
-    private _directory: DirectoryTree;
-    private _rootDir: string;
+const defaultValues: IAppState = {
+    fileSidebarOpen: true,
+    directory: null,
+    initialized: false
+};
 
-    public get directory(): DirectoryTree {
-        return JSON.parse(JSON.stringify(this._directory)); // return deep copy
-    }
-
-    public set directory(value: DirectoryTree) {
-        this._directory = value;
-    }
-
-    private _initialized: boolean = false;
-    public get initialized(): boolean {
-        return this._initialized;
-    }
-
-    constructor() {
-        this._initialized = false;
-        this.directory = {
-            path: '',
-            name: '',
-            size: 0,
-            type: 'directory',
-            children: null
-        };
-    }
-
-    public async initialize(): Promise<void> {
-        if (this._initialized) return;
-        if (this._rootDir == null || this._rootDir == '') {
-            await this.determineRootDir();
-            if (this._rootDir == null || this._rootDir == '') {
-                return;
-            }
-        }
-        await this.scanDirectory();
-        this._initialized = true;
-    }
-
-    private async determineRootDir(): Promise<void> {
-        const cookie = CookieManager.get(Cookies.RootDirPath);
-        if (cookie == null || cookie == '') {
-            return await this.askForFolder();
-        }
-        this._rootDir = cookie;
-    }
-
-    private async askForFolder(): Promise<void> {
-        const selection = await dialog.showOpenDialog({ properties: [ 'openDirectory' ]});
-        if (selection.filePaths == null || selection.filePaths.length === 0) {
-            return;
+export class AppState extends Record(defaultValues) implements IAppState {
+    constructor(params?: IAppState) {
+        if (params == null) {
+            params = Object.assign({}, defaultValues);
         }
 
-        this._rootDir = selection.filePaths[0];
-        CookieManager.set(Cookies.RootDirPath, this._rootDir);
+        params.directory = new DirectoryTreeRecord(params.directory);
+
+        super(params);
     }
 
-    private scanDirectory(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            try {
-                this.directory = directoryTree(this._rootDir, {normalizePath: true});
-                resolve();
-            } catch (err) {
-                reject(err);
-            }
-        });
+    public with(values: Partial<IAppState>): AppState {
+        return new AppState(Object.assign(this.toJS(), values));
     }
 }
 
-const appStateSingleton = new AppStateClass();
+export type AppStateUpdater = Dispatch<SetStateAction<AppState>>;
 
-export const AppState = appStateSingleton;
-export const AppStateContext = React.createContext(AppState);
+const defaultState = new AppState();
+const defaultUpdater: AppStateUpdater = () => {};
+export const AppStateContext = createContext([defaultState, defaultUpdater]);
+
+const useAppState = (): [AppState, AppStateUpdater] => {
+    const [appState, setAppState] = useContext(AppStateContext);
+
+    return [appState as AppState, setAppState as AppStateUpdater];
+};
+
+export default useAppState;

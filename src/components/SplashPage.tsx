@@ -1,44 +1,37 @@
 import React from 'react';
-import { CssClassProps } from '@modules/CssClassProp';
 import FolderIcon from '@material-ui/icons/Folder';
 import { Button } from '@material-ui/core';
-import { ReactUtils } from '@modules/ReactUtils';
-import { AppStateContext, AppStateClass } from '@appstate';
 import './SplashPage.scss';
+import useAppState from '../AppState';
+import FileUtils from '@modules/FileUtils';
 
-export interface SplashPageProps extends CssClassProps {
-    onFolderSelected: () => void;
-}
+const SplashPage: React.FC = () => {
+    const [appState, setAppState] = useAppState();
 
-export class SplashPage extends React.Component<SplashPageProps> {
-    constructor(props: SplashPageProps) {
-        super(props);
-        ReactUtils.bindAll(this);
-    }
+    const selectFolder = async () => {
+        try {
+            const tree = await FileUtils.askForFolder();
+            setAppState(appState.with({
+                directory: tree,
+                initialized: true,
+            }));
+        } catch (e) {
+            // TODO react-toastify
+        }
+    };
 
-    public render(): JSX.Element {
-        return (
-            <AppStateContext.Consumer>
-                {
-                    (appState: AppStateClass) => appState && (
-                        <div className="c-splash-page">
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                startIcon={<FolderIcon/>}
-                                onClick={() => this.selectFolder(appState)}>
-                                Select Folder
-                            </Button>
-                        </div>
-                    )
-                }
-            </AppStateContext.Consumer>
-        );
-    }
+    return (
+        <div className="c-splash-page">
+            <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<FolderIcon/>}
+                onClick={selectFolder}>
+                Select Folder
+            </Button>
+        </div>
+    );
+};
 
-    private async selectFolder(appState: AppStateClass): Promise<void> {
-        await appState.initialize();
-        this.props.onFolderSelected();
-    }
-}
+export default SplashPage;
