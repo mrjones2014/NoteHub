@@ -4,6 +4,10 @@
     box-shadow: 10px 0px 11px -8px rgba(0,0,0,0.75);
     background-color: #212121;
 
+    &.-hidden {
+        display: none;
+    }
+
     .MuiTreeItem-root:focus > .MuiTreeItem-content {
         background-color: #696969; // nice
     }

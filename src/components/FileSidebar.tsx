@@ -44,13 +44,9 @@ const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
         </TreeItem>
     );
 
-    if (!props.open) {
-        return null;
-    }
-
     return (
         <div
-            className={`c-file-sidebar ${props.cssClass ?? ''}`}>
+            className={`c-file-sidebar ${props.cssClass ?? ''} ${appState.fileSidebarOpen ? "" : "-hidden"}`}>
             { !appState.initialized &&
                 <CircularProgress/>
             }
