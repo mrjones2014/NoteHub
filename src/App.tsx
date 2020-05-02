@@ -8,6 +8,7 @@ import './Global.scss';
 import { useState } from 'react';
 import { AppState, AppStateContext } from './AppState';
 import FileUtils from '@modules/FileUtils';
+import Sidebar from '@components/Sidebar';
 
 const theme = createMuiTheme({
     palette: {
@@ -54,14 +55,10 @@ const App: React.FC = () => {
                 {
                     appState.initialized && initialized &&
                     <>
-                        <AppBar position="sticky" color="default">
-                            <Toolbar>
-                                <IconButton edge="start" onClick={toggleSidebar} title="Files">
-                                    <MenuIcon/>
-                                </IconButton>
-                            </Toolbar>
-                        </AppBar>
-                        <FileSidebar open={appState.fileSidebarOpen} onToggle={toggleSidebar}/>
+                        <Sidebar/>
+                        <div className="c-app-content">
+                            <FileSidebar open={appState.fileSidebarOpen} onToggle={toggleSidebar}/>
+                        </div>
                     </>
                 }
             </AppStateContext.Provider>

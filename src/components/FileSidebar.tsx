@@ -2,8 +2,6 @@ import React from 'react';
 import { Drawer, CircularProgress, IconButton, Divider } from '@material-ui/core';
 import { CssClassProps } from '@modules/CssClassProp';
 import TreeView from '@material-ui/lab/TreeView';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import './FileSidebar.scss';
 import useAppState from '../AppState';
 import { DirectoryTreeRecord } from '../modules/DirectoryTreeRecord';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
@@ -46,29 +44,22 @@ const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
         </TreeItem>
     );
 
+    if (!props.open) {
+        return null;
+    }
+
     return (
-        <Drawer
-            open={props.open}
-            variant="persistent"
-            anchor="left"
+        <div
             className={`c-file-sidebar ${props.cssClass ?? ''}`}>
             { !appState.initialized &&
                 <CircularProgress/>
             }
             { appState.initialized &&
-                <>
-                    <div className="c-file-sidebar__drawer-header">
-                        <IconButton onClick={props.onToggle} title="Collapse">
-                            <ChevronLeftIcon/>
-                        </IconButton>
-                    </div>
-                    <Divider/>
-                    <TreeView>
-                        { recursivelyRenderDir(appState.directory) }
-                    </TreeView>
-                </>
+                <TreeView>
+                    { recursivelyRenderDir(appState.directory) }
+                </TreeView>
             }
-        </Drawer>
+        </div>
     );
 };
 

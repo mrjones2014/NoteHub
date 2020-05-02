@@ -1,7 +1,6 @@
 import React from 'react';
 import FolderIcon from '@material-ui/icons/Folder';
 import { Button } from '@material-ui/core';
-import './SplashPage.scss';
 import useAppState from '../AppState';
 import FileUtils from '@modules/FileUtils';
 

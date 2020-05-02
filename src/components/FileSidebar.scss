@@ -1,23 +1,6 @@
 .c-file-sidebar {
-    padding: 20px;
-
-    &__drawer-header {
-        display: flex;
-        align-items: center;
-
-        button.MuiButtonBase-root.MuiIconButton-root {
-            margin-left: -10px;
-        }
-    }
-
-    .MuiDrawer-paperAnchorLeft {
-        padding: 20px;
-        padding-top: 0;
-    }
-
-    .MuiTreeItem-root {
-        &:focus>.MuiTreeItem-content {
-            background-color: rgba(135, 135, 135, 0.72)
-        }
-    }
+    padding: 12px;
+    height: 100%;
+    box-shadow: 10px 0px 11px -8px rgba(0,0,0,0.75);
+    background-color: #212121;
 }

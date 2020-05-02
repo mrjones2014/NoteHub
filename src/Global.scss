@@ -16,3 +16,9 @@
   border-radius: 10px;
   background-color: rgba(160, 160, 160, 0.8);
 }
+
+// Variables
+$sidebar-width: 50px;
+
+@import "App";
+@import "./components/components";
