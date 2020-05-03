@@ -22,8 +22,4 @@ export class DirectoryTreeRecord extends Record(defaultValues) implements Direct
     public with(values: Partial<DirectoryTree>): DirectoryTreeRecord {
         return new DirectoryTreeRecord(Object.assign(this.toJS(), values));
     }
-
-    public toTree(): any {
-
-    }
 }

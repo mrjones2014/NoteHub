@@ -1,31 +1,34 @@
 import { Record } from "immutable";
-import { DirectoryTreeRecord } from './modules/DirectoryTreeRecord';
+import { DirectoryTreeRecord } from '@modules/DirectoryTreeRecord';
 import { Dispatch, SetStateAction, createContext, useContext } from 'react';
 
-export interface IAppState {
+export interface AppStateInterface {
     fileSidebarOpen: boolean;
     directory: DirectoryTreeRecord;
     initialized: boolean;
+    selectedFile: DirectoryTreeRecord;
 }
 
-const defaultValues: IAppState = {
+const defaultValues: AppStateInterface = {
     fileSidebarOpen: true,
     directory: null,
-    initialized: false
+    initialized: false,
+    selectedFile: null,
 };
 
-export class AppState extends Record(defaultValues) implements IAppState {
-    constructor(params?: IAppState) {
+export class AppState extends Record(defaultValues) implements AppStateInterface {
+    constructor(params?: AppStateInterface) {
         if (params == null) {
             params = Object.assign({}, defaultValues);
         }
 
         params.directory = new DirectoryTreeRecord(params.directory);
+        params.selectedFile = new DirectoryTreeRecord(params.selectedFile);
 
         super(params);
     }
 
-    public with(values: Partial<IAppState>): AppState {
+    public with(values: Partial<AppStateInterface>): AppState {
         return new AppState(Object.assign(this.toJS(), values));
     }
 }

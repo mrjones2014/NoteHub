@@ -17,8 +17,15 @@
   background-color: rgba(160, 160, 160, 0.8);
 }
 
+html, textarea {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
 // Variables
 $sidebar-width: 50px;
 
 @import "App";
 @import "./components/components";
+
+@import "~react-mde/lib/styles/css/react-mde-all.css";
+@import "~react-toastify/dist/ReactToastify.css";

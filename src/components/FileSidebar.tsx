@@ -7,7 +7,6 @@ import { DirectoryTreeRecord } from '../modules/DirectoryTreeRecord';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import FolderIcon from '@material-ui/icons/Folder';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { Comparators } from '@modules/Comparators';
 import TreeItem from '@material-ui/lab/TreeItem';
 
 export interface FileSidebarProps extends CssClassProps {
@@ -16,33 +15,58 @@ export interface FileSidebarProps extends CssClassProps {
 }
 
 const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
-    const [appState] = useAppState();
+    const [appState, setAppState] = useAppState();
+    
+    const setSelectedFile = (file: DirectoryTreeRecord) => {
+        if (file.type === "file") {
+            setAppState(appState.with({ selectedFile: file }));
+        }
+    };
 
-    const recursivelyRenderDir = (directory: DirectoryTreeRecord): JSX.Element => (
-        <TreeItem
-            key={directory.path}
-            nodeId={directory.path}
-            label={directory.name}
-            collapseIcon={<FolderOpenIcon/>}
-            expandIcon={<FolderIcon/>}
-            icon={directory.type === "directory" ? null : <DescriptionIcon/>}>
-            {
-                directory.children?.sort(Comparators.DirectoryTree)?.map((dir: DirectoryTreeRecord) =>
-                    <TreeItem
-                        nodeId={dir.path}
-                        label={dir.name}
-                        collapseIcon={<FolderOpenIcon/>}
-                        expandIcon={<FolderIcon/>}
-                        icon={dir.type === "directory" ? null : <DescriptionIcon/>}
-                        key={dir.path}>
-                        {
-                            dir.children?.map(recursivelyRenderDir)
-                        }
-                    </TreeItem>
-                )
-            }
-        </TreeItem>
-    );
+    const recursivelyRenderDir = (directory: DirectoryTreeRecord): JSX.Element => {
+        const children = (directory.children ?? []).filter((d: DirectoryTreeRecord) => d.type === "directory")?.map((dir: DirectoryTreeRecord) =>
+            <TreeItem
+                nodeId={dir.path}
+                label={dir.name}
+                collapseIcon={<FolderOpenIcon/>}
+                expandIcon={<FolderIcon/>}
+                icon={dir.type === "directory" ? null : <DescriptionIcon/>}
+                onClick={() => setSelectedFile(dir)}
+                key={dir.path}>
+                {
+                    dir.children?.map(recursivelyRenderDir)
+                }
+            </TreeItem>
+        ).concat(
+            (directory.children ?? []).filter((d: DirectoryTreeRecord) => d.type === "file")?.map((dir: DirectoryTreeRecord) =>
+                <TreeItem
+                    nodeId={dir.path}
+                    label={dir.name}
+                    collapseIcon={<FolderOpenIcon/>}
+                    expandIcon={<FolderIcon/>}
+                    icon={dir.type === "directory" ? null : <DescriptionIcon/>}
+                    onClick={() => setSelectedFile(dir)}
+                    key={dir.path}>
+                    {
+                        dir.children?.map(recursivelyRenderDir)
+                    }
+                </TreeItem>
+            )
+        ).filter((e: React.ReactNode) => e != null);
+
+        return (
+            <TreeItem
+                key={directory.path}
+                nodeId={directory.path}
+                label={directory.name}
+                collapseIcon={<FolderOpenIcon/>}
+                expandIcon={<FolderIcon/>}
+                onClick={() => setSelectedFile(directory)}
+                icon={directory.type === "directory" ? null : <DescriptionIcon/>}>
+                { children }
+            </TreeItem>
+        );
+    }
 
     return (
         <div

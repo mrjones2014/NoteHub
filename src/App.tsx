@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect , useState } from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { CssBaseline, AppBar, Toolbar, IconButton, CircularProgress } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { CssBaseline, CircularProgress } from '@material-ui/core';
 import FileSidebar from '@components/FileSidebar';
 import SplashPage from '@components/SplashPage';
-import './Global.scss';
-import { useState } from 'react';
 import { AppState, AppStateContext } from './AppState';
 import FileUtils from '@modules/FileUtils';
 import Sidebar from '@components/Sidebar';
+import Editor from '@components/Editor';
+import { ToastContainer } from "react-toastify";
+
+import './Global.scss';
 
 const theme = createMuiTheme({
     palette: {
@@ -38,8 +39,8 @@ const App: React.FC = () => {
         } else {
             setInitialized(true);
         }
-    }, []); // empty dep array, run only once    
-    
+    }, []); // empty dep array, run only once
+
     return (
         <MuiThemeProvider theme={theme}>
             <CssBaseline/>
@@ -58,9 +59,17 @@ const App: React.FC = () => {
                         <Sidebar/>
                         <div className="c-app-content">
                             <FileSidebar open={appState.fileSidebarOpen} onToggle={toggleSidebar}/>
+                            {
+                                appState.selectedFile && appState.selectedFile.path &&
+                                <Editor key={appState.selectedFile?.path} filePath={appState.selectedFile.path}/>
+                            }
                         </div>
                     </>
                 }
+                <ToastContainer
+                    autoClose={3000}
+                    position="bottom-right"
+                    draggable={false}/>
             </AppStateContext.Provider>
         </MuiThemeProvider>
     );

@@ -1,0 +1,47 @@
+.c-editor {
+    flex-grow: 1;
+    height: 100%;
+    position: relative;
+
+    &__save-btn {
+        position: absolute!important;
+        top: 5px;
+        right: 5px;
+    }
+
+    .react-mde {
+        height: 100%;
+
+        .mde-header {
+            height: 45px;
+
+            + div {
+                height: calc(100% - 45px);
+
+                .mde-textarea-wrapper {
+                    height: 100%;
+
+                    .mde-text {
+                        height: 100%!important;
+                        font-size: 110%;
+                        background-color: #303030;
+                        color: #ffffff;
+                    }
+                }
+
+                .grip {
+                    display: none;
+                }
+            }
+        }
+
+        .mde-preview {
+            height: calc(100% - 45px);
+            overflow-y: auto;
+
+            .mde-preview-content {
+                font-size: 130%;
+            }
+        }
+    }
+}

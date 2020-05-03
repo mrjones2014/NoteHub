@@ -3,6 +3,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import { Button } from '@material-ui/core';
 import useAppState from '../AppState';
 import FileUtils from '@modules/FileUtils';
+import { toast } from 'react-toastify';
 
 const SplashPage: React.FC = () => {
     const [appState, setAppState] = useAppState();
@@ -15,7 +16,7 @@ const SplashPage: React.FC = () => {
                 initialized: true,
             }));
         } catch (e) {
-            // TODO react-toastify
+            toast.error("Failed to open folder. Please try again.");
         }
     };
 
