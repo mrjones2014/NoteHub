@@ -5,6 +5,7 @@ import ReactMde from "react-mde";
 import { CircularProgress, Button } from '@material-ui/core';
 import { toast } from "react-toastify";
 import FileUtils from '@modules/FileUtils';
+import { CssClassProps } from '@modules/CssClassProp';
 
 const renderer = new Showdown.Converter({
     tables: true,
@@ -14,7 +15,7 @@ const renderer = new Showdown.Converter({
 });
 renderer.setFlavor("github");
 
-export interface EditorProps {
+export interface EditorProps extends CssClassProps {
     filePath: string;
 }
 
@@ -55,7 +56,7 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     }
 
     return (
-        <div className="c-editor">
+        <div className={`c-editor ${props.cssClass ?? ""}`}>
             <ReactMde
                 value={value}
                 onChange={setValue}

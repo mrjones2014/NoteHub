@@ -1,7 +1,11 @@
 .c-editor {
     flex-grow: 1;
-    height: 100%;
+    height: calc(100% - 50px);
     position: relative;
+
+    &.-hidden {
+        display: none;
+    }
 
     &__save-btn {
         position: absolute!important;
@@ -11,6 +15,7 @@
 
     .react-mde {
         height: 100%;
+        border: none;
 
         .mde-header {
             height: 45px;

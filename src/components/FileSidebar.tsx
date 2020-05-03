@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, CircularProgress, IconButton, Divider } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import { CssClassProps } from '@modules/CssClassProp';
 import TreeView from '@material-ui/lab/TreeView';
 import useAppState from '../AppState';
@@ -16,10 +16,14 @@ export interface FileSidebarProps extends CssClassProps {
 
 const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
     const [appState, setAppState] = useAppState();
-    
-    const setSelectedFile = (file: DirectoryTreeRecord) => {
-        if (file.type === "file") {
-            setAppState(appState.with({ selectedFile: file }));
+
+    const openFile = (file: DirectoryTreeRecord) => {
+        if (file.type === "file" && !appState.selectedFiles.some((f: DirectoryTreeRecord) => f.path === file.path)) {
+            const newFilesArr = [...appState.selectedFiles, file];
+            setAppState(appState.with({
+                selectedFiles: newFilesArr,
+                activeTab: newFilesArr.length - 1,
+            }));
         }
     };
 
@@ -31,7 +35,7 @@ const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
                 collapseIcon={<FolderOpenIcon/>}
                 expandIcon={<FolderIcon/>}
                 icon={dir.type === "directory" ? null : <DescriptionIcon/>}
-                onClick={() => setSelectedFile(dir)}
+                onClick={() => openFile(dir)}
                 key={dir.path}>
                 {
                     dir.children?.map(recursivelyRenderDir)
@@ -45,7 +49,7 @@ const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
                     collapseIcon={<FolderOpenIcon/>}
                     expandIcon={<FolderIcon/>}
                     icon={dir.type === "directory" ? null : <DescriptionIcon/>}
-                    onClick={() => setSelectedFile(dir)}
+                    onClick={() => openFile(dir)}
                     key={dir.path}>
                     {
                         dir.children?.map(recursivelyRenderDir)
@@ -61,7 +65,7 @@ const FileSidebar: React.FC<FileSidebarProps> = (props: FileSidebarProps) => {
                 label={directory.name}
                 collapseIcon={<FolderOpenIcon/>}
                 expandIcon={<FolderIcon/>}
-                onClick={() => setSelectedFile(directory)}
+                onClick={() => openFile(directory)}
                 icon={directory.type === "directory" ? null : <DescriptionIcon/>}>
                 { children }
             </TreeItem>

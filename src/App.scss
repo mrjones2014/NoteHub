@@ -11,4 +11,12 @@
     display: flex;
     margin-left: $sidebar-width;
     height: 100vh;
+
+    &__editor-area {
+        flex-grow: 1;
+
+        &__tabs {
+            height: 50px;
+        }
+    }
 }

@@ -21,6 +21,10 @@ html, textarea {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
+.MuiTab-root {
+  text-transform: none!important;
+}
+
 // Variables
 $sidebar-width: 50px;
 

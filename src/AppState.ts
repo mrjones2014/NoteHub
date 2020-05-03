@@ -1,19 +1,22 @@
 import { Record } from "immutable";
 import { DirectoryTreeRecord } from '@modules/DirectoryTreeRecord';
 import { Dispatch, SetStateAction, createContext, useContext } from 'react';
+import { DirectoryTree } from 'directory-tree';
 
 export interface AppStateInterface {
     fileSidebarOpen: boolean;
     directory: DirectoryTreeRecord;
     initialized: boolean;
-    selectedFile: DirectoryTreeRecord;
+    selectedFiles: Array<DirectoryTreeRecord>;
+    activeTab: number;
 }
 
 const defaultValues: AppStateInterface = {
     fileSidebarOpen: true,
     directory: null,
     initialized: false,
-    selectedFile: null,
+    selectedFiles: [],
+    activeTab: 0,
 };
 
 export class AppState extends Record(defaultValues) implements AppStateInterface {
@@ -23,7 +26,7 @@ export class AppState extends Record(defaultValues) implements AppStateInterface
         }
 
         params.directory = new DirectoryTreeRecord(params.directory);
-        params.selectedFile = new DirectoryTreeRecord(params.selectedFile);
+        params.selectedFiles = (params.selectedFiles ?? []).map((d: DirectoryTree) => new DirectoryTreeRecord(d));
 
         super(params);
     }
