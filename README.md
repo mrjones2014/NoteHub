@@ -1,4 +1,4 @@
-# NoteHub
+# NoteHub ![Node.js CI](https://github.com/mrjones2014/NoteHub/workflows/Node.js%20CI/badge.svg)
 
 WIP A markdown note-taking app that syncs via a Github repository or gist.
 
