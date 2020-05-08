@@ -28,6 +28,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: Remove-Item .\node_modules\ -Recurse
+    - run: Remove-Item .\node_modules\ -Recurse -ErrorAction Ignore
     - run: npm install
     - run: npm run publish
