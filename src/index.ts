@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu, globalShortcut } from 'electron';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
+Menu.setApplicationMenu(null);
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -8,6 +9,12 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 }
 
 const createWindow = () => {
+  try {
+    BrowserWindow.addDevToolsExtension(`${process.env["LOCALAPPDATA"]}\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.4.0_0`);
+  } catch (e) {
+    console.error("Failed to load react-dev-tools extension. You might need to update the file path.");
+  }
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 600,
@@ -17,6 +24,13 @@ const createWindow = () => {
     }
   });
 
+  if (process.mainModule.filename.indexOf('app.asar') === -1) {
+    // development environment
+    globalShortcut.register('CommandOrControl+Shift+I', () => {
+      mainWindow.webContents.openDevTools();
+    });
+  }
+
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
@@ -25,6 +39,7 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

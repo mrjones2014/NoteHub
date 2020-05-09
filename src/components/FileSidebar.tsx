@@ -2,7 +2,7 @@ import React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { CssClassProps } from '@modules/CssClassProp';
 import TreeView from '@material-ui/lab/TreeView';
-import useAppState from '../AppState';
+import useAppState from '@appstate';
 import { DirectoryTreeRecord } from '../modules/DirectoryTreeRecord';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import FolderIcon from '@material-ui/icons/Folder';

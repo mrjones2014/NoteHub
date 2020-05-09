@@ -1,7 +1,7 @@
 import React from 'react';
 import FolderIcon from '@material-ui/icons/Folder';
 import { Button } from '@material-ui/core';
-import useAppState from '../AppState';
+import useAppState from '@appstate';
 import FileUtils from '@modules/FileUtils';
 import { toast } from 'react-toastify';
 

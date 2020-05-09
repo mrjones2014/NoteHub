@@ -2,6 +2,7 @@ import { Record } from "immutable";
 import { DirectoryTreeRecord } from '@modules/DirectoryTreeRecord';
 import { Dispatch, SetStateAction, createContext, useContext } from 'react';
 import { DirectoryTree } from 'directory-tree';
+import SettingsManager from '@modules/SettingsManager';
 
 export interface AppStateInterface {
     fileSidebarOpen: boolean;
@@ -9,6 +10,7 @@ export interface AppStateInterface {
     initialized: boolean;
     selectedFiles: Array<DirectoryTreeRecord>;
     activeTab: number;
+    githubPersonalAccessToken?: string;
 }
 
 const defaultValues: AppStateInterface = {
@@ -17,6 +19,7 @@ const defaultValues: AppStateInterface = {
     initialized: false,
     selectedFiles: [],
     activeTab: 0,
+    githubPersonalAccessToken: SettingsManager.githubPersonalAccessToken,
 };
 
 export class AppState extends Record(defaultValues) implements AppStateInterface {

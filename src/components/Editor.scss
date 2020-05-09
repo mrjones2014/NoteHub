@@ -7,6 +7,16 @@
         display: none;
     }
 
+    &.-settings-editor {
+        .react-mde.react-mde-tabbed-layout {
+            .mde-header {
+                .mde-tabs, .mde-header-group {
+                    display: none;
+                }
+            }
+        }
+    }
+
     &__save-btn {
         position: absolute!important;
         top: 5px;

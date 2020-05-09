@@ -6,6 +6,8 @@ import { CircularProgress, Button } from '@material-ui/core';
 import { toast } from "react-toastify";
 import FileUtils from '@modules/FileUtils';
 import { CssClassProps } from '@modules/CssClassProp';
+import SettingsManager from '@modules/SettingsManager';
+import useDebouce from '@modules/hooks/UseDebounce';
 
 const renderer = new Showdown.Converter({
     tables: true,
@@ -20,13 +22,22 @@ export interface EditorProps extends CssClassProps {
 }
 
 const Editor: React.FC<EditorProps> = (props: EditorProps) => {
+    const settingsPath = SettingsManager.filePath.split("\\").join("/"); // normalize path
+    const isSettingsFile = props.filePath === settingsPath;
+
     const [loading, setLoading] = useState(true);
     const [value, setValue] = useState("");
-    const [selectedTab, setSelectedTab] = useState<"write" | "preview">("preview");
+    const debouncedValue = useDebouce(value);
+    const [selectedTab, setSelectedTab] = useState<"write" | "preview">(
+         isSettingsFile ? "write" : "preview"
+    );
 
     useEffect(() => FileUtils.getFileContents(
         props.filePath,
         (data: string) => {
+            if (isSettingsFile) {
+                data = JSON.stringify(JSON.parse(data), null, 4); // pretty print json
+            }
             setValue(data);
             setLoading(false);
         },
@@ -41,22 +52,26 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     const save = () => FileUtils.saveFile(
         props.filePath,
         value,
-        () => {
-            toast.success("File saved successfully.");
-            setSelectedTab("preview");
-        },
+        () => {},
         (err) => {
-            toast.error("Failed to save file. Please try again.");
+            toast.error("Failed to save file. Change the file contents to re-trigger autosave");
             console.error(err);
         }
     );
+
+    // autosave
+    useEffect(() => {
+        if (loading === false) {
+            save();
+        }
+    }, [debouncedValue, loading]);
 
     if (loading) {
         return <CircularProgress/>;
     }
 
     return (
-        <div className={`c-editor ${props.cssClass ?? ""}`}>
+        <div className={`c-editor ${props.cssClass ?? ""} ${isSettingsFile ? "-settings-editor" : ""}`}>
             <ReactMde
                 value={value}
                 onChange={setValue}
@@ -64,13 +79,6 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                 onTabChange={setSelectedTab}
                 generateMarkdownPreview={render}
             />
-            <Button
-                variant="contained"
-                className="c-editor__save-btn"
-                size="small"
-                onClick={save}>
-                Save
-            </Button>
         </div>
     );
 };

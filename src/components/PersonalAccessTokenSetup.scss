@@ -1,0 +1,19 @@
+.c-personal-access-token-setup {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .MuiInputBase-root {
+        width: 75%;
+
+        input {
+            width: 100%;
+        }
+    }
+
+    button.-step-2 {
+        margin-top: 16px;
+    }
+}

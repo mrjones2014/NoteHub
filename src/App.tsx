@@ -1,6 +1,7 @@
+import './Global.scss';
 import React, { useEffect , useState } from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { CssBaseline, CircularProgress, Tabs, AppBar, Tab } from '@material-ui/core';
+import { CssBaseline, CircularProgress, Tabs, AppBar, Tab, IconButton } from '@material-ui/core';
 import FileSidebar from '@components/FileSidebar';
 import SplashPage from '@components/SplashPage';
 import { AppState, AppStateContext } from './AppState';
@@ -9,9 +10,10 @@ import Sidebar from '@components/Sidebar';
 import Editor from '@components/Editor';
 import { ToastContainer } from "react-toastify";
 import * as Path from "path";
-
-import './Global.scss';
 import { DirectoryTreeRecord } from '@modules/DirectoryTreeRecord';
+import SettingsManager from '@modules/SettingsManager';
+import PersonalAccessTokenSetup from '@components/PersonalAccessTokenSetup';
+import CloseIcon from '@material-ui/icons/Close';
 
 const theme = createMuiTheme({
     palette: {
@@ -36,6 +38,8 @@ const App: React.FC = () => {
     };
 
     useEffect(() => {
+        setAppState(appState.with({ githubPersonalAccessToken: SettingsManager.githubPersonalAccessToken }));
+
         if (FileUtils.hasFolderCookie()) {
             initFromCookie();
         } else {
@@ -47,6 +51,19 @@ const App: React.FC = () => {
 
     const setActiveTab = (_: any, idx: number) => setAppState(appState.with({ activeTab: idx }));
 
+    const closeEditor = (index: number) => {
+        console.log(appState.selectedFiles);
+        const newEditors = [...appState.selectedFiles].splice(index, 1);
+        console.log(newEditors);
+        console.log(newEditors.length);
+        const newAppState = appState.with({
+            selectedFiles: newEditors,
+            activeTab: newEditors.length - 1
+        });
+        console.log(newAppState.toJS());
+        setAppState(newAppState);
+    };
+
     return (
         <MuiThemeProvider theme={theme}>
             <CssBaseline/>
@@ -56,11 +73,15 @@ const App: React.FC = () => {
                     <CircularProgress/>
                 }
                 {
-                    !appState.initialized && initialized &&
+                    !appState.initialized && initialized && appState.githubPersonalAccessToken == null &&
+                    <PersonalAccessTokenSetup/>
+                }
+                {
+                    !appState.initialized && initialized && appState.githubPersonalAccessToken != null &&
                     <SplashPage/>
                 }
                 {
-                    appState.initialized && initialized &&
+                    appState.initialized && initialized && appState.githubPersonalAccessToken != null &&
                     <>
                         <Sidebar/>
                         <div className="c-app-content">
@@ -73,8 +94,15 @@ const App: React.FC = () => {
                                         variant="scrollable"
                                         scrollButtons="auto">
                                         {
-                                            (appState.selectedFiles ?? []).map((d: DirectoryTreeRecord) =>
-                                                <Tab label={getFileName(d.path)} key={d.path}/>
+                                            (appState.selectedFiles ?? []).map((d: DirectoryTreeRecord, idx: number) =>
+                                                <Tab
+                                                    label={
+                                                        <div className="c-editor-label">
+                                                            {getFileName(d.path)}
+                                                            <CloseIcon onClick={() => closeEditor(idx)}/>
+                                                        </div>
+                                                    }
+                                                    key={d.path}/>
                                             )
                                         }
                                     </Tabs>

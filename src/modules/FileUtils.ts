@@ -2,6 +2,7 @@ import { CookieManager, Cookies } from '@modules/Cookies';
 import { DirectoryTreeRecord } from '@modules/DirectoryTreeRecord';
 import directoryTree from 'directory-tree';
 import * as FileSystem from "fs";
+import SettingsManager from '@modules/SettingsManager';
 const { dialog } = require('electron').remote;
 
 const hasFolderCookie = (): boolean => {
@@ -27,6 +28,9 @@ const askForFolder = async (): Promise<DirectoryTreeRecord> => {
     CookieManager.set(Cookies.RootDirPath, path);
     return new DirectoryTreeRecord(directoryTree(path, {normalizePath: true}));
 };
+
+const openSettingsFile = (): DirectoryTreeRecord =>
+    new DirectoryTreeRecord(directoryTree(SettingsManager.filePath, {normalizePath: true}));
 
 const getFileContents = (path: string, onSuccess: (data: string) => void, onError: (error: any) => void) => {
     try {
@@ -65,6 +69,7 @@ const FileUtils = {
     hasFolderCookie,
     getFileContents,
     saveFile,
+    openSettingsFile,
 };
 
 export default FileUtils;
