@@ -1,16 +1,19 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-native/no-color-literals */
 
-import * as React from "react"
-import { storiesOf } from "@storybook/react-native"
-import { StoryScreen, Story, UseCase } from "../../../storybook/views"
-import { Text, TextField } from "../"
-import { State } from "react-powerplug"
-import { ViewStyle, TextStyle, Alert } from "react-native"
+import * as React from "react";
+import { storiesOf } from "@storybook/react-native";
+import { StoryScreen, Story, UseCase } from "../../../storybook/views";
+import { Text, TextField } from "../";
+import { State } from "react-powerplug";
+import { ViewStyle, TextStyle, Alert } from "react-native";
 
-declare var module
+declare var module;
 
-const styleArray: ViewStyle[] = [{ paddingHorizontal: 30 }, { borderWidth: 30 }]
+const styleArray: ViewStyle[] = [
+  { paddingHorizontal: 30 },
+  { borderWidth: 30 },
+];
 
 const inputStyleArray: TextStyle[] = [
   {
@@ -23,18 +26,21 @@ const inputStyleArray: TextStyle[] = [
     borderRadius: 4,
     borderColor: "#7fff00",
   },
-]
-var alertWhenFocused = true
+];
+var alertWhenFocused = true;
 
 storiesOf("TextField", module)
-  .addDecorator(fn => <StoryScreen>{fn()}</StoryScreen>)
+  .addDecorator((fn) => <StoryScreen>{fn()}</StoryScreen>)
   .add("Labelling", () => (
     <Story>
-      <UseCase text="Normal text" usage="Use placeholder and label to set the text.">
+      <UseCase
+        text="Normal text"
+        usage="Use placeholder and label to set the text."
+      >
         <State initial={{ value: "" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               label="Name"
               placeholder="omg your name"
@@ -43,11 +49,14 @@ storiesOf("TextField", module)
         </State>
       </UseCase>
 
-      <UseCase text="i18n text" usage="Use placeholderTx and labelTx for i18n lookups">
+      <UseCase
+        text="i18n text"
+        usage="Use placeholderTx and labelTx for i18n lookups"
+      >
         <State initial={{ value: "" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               placeholderTx="storybook.placeholder"
               labelTx="storybook.field"
@@ -67,7 +76,7 @@ storiesOf("TextField", module)
         <State initial={{ value: "Inigo" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               label="First Name"
               style={{ paddingTop: 0, paddingHorizontal: 40 }}
@@ -77,7 +86,7 @@ storiesOf("TextField", module)
         <State initial={{ value: "Montoya" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               label="Last Name"
               style={{ paddingBottom: 0 }}
@@ -92,7 +101,7 @@ storiesOf("TextField", module)
         <State initial={{ value: "fancy colour" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               label="Name"
               inputStyle={{
@@ -109,11 +118,14 @@ storiesOf("TextField", module)
         <Text text="* attention designers:  i am so sorry" preset="secondary" />
       </UseCase>
 
-      <UseCase text="Style array" usage="Useful for 1-off exceptions, but using style arrays.">
+      <UseCase
+        text="Style array"
+        usage="Useful for 1-off exceptions, but using style arrays."
+      >
         <State initial={{ value: "fancy colour" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               label="Name"
               style={styleArray}
@@ -131,7 +143,7 @@ storiesOf("TextField", module)
         <State initial={{ value: "fancy colour" }}>
           {({ state, setState }) => (
             <TextField
-              onChangeText={value => setState({ value })}
+              onChangeText={(value) => setState({ value })}
               value={state.value}
               label="Name"
               inputStyle={{
@@ -142,12 +154,12 @@ storiesOf("TextField", module)
                 borderRadius: 4,
                 borderColor: "hotpink",
               }}
-              forwardedRef={ref => ref}
+              forwardedRef={(ref) => ref}
               onFocus={() => {
                 if (alertWhenFocused) {
                   // Prevent text field focus from being repeatedly triggering alert
-                  alertWhenFocused = false
-                  Alert.alert("Text field focuesed with forwarded ref!")
+                  alertWhenFocused = false;
+                  Alert.alert("Text field focuesed with forwarded ref!");
                 }
               }}
             />
@@ -156,4 +168,4 @@ storiesOf("TextField", module)
         <Text text="* attention designers:  i am so sorry" preset="secondary" />
       </UseCase>
     </Story>
-  ))
+  ));

@@ -7,18 +7,18 @@
 // side effect of breaking other tooling like mobile-center and react-native-rename.
 //
 // It's easier just to leave it here.
-import App from "./app/app.tsx"
+import App from "./app/app.tsx";
 
 // Should we show storybook instead of our app?
 //
 // ⚠️ Leave this as `false` when checking into git.
-const SHOW_STORYBOOK = false
+const SHOW_STORYBOOK = false;
 
-let RootComponent = App
+let RootComponent = App;
 if (__DEV__ && SHOW_STORYBOOK) {
   // Only include Storybook if we're in dev mode
-  const { StorybookUIRoot } = require("./storybook")
-  RootComponent = StorybookUIRoot
+  const { StorybookUIRoot } = require("./storybook");
+  RootComponent = StorybookUIRoot;
 }
 
-export default RootComponent
+export default RootComponent;

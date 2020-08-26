@@ -1,19 +1,19 @@
-import * as React from "react"
-import { View, Alert } from "react-native"
-import { storiesOf } from "@storybook/react-native"
-import { StoryScreen, Story, UseCase } from "../../../storybook/views"
-import { Header } from "./header"
-import { color } from "../../theme"
+import * as React from "react";
+import { View, Alert } from "react-native";
+import { storiesOf } from "@storybook/react-native";
+import { StoryScreen, Story, UseCase } from "../../../storybook/views";
+import { Header } from "./header";
+import { color } from "../../theme";
 
-declare var module
+declare var module;
 
 const VIEWSTYLE = {
   flex: 1,
   backgroundColor: color.storybookDarkBg,
-}
+};
 
 storiesOf("Header", module)
-  .addDecorator(fn => <StoryScreen>{fn()}</StoryScreen>)
+  .addDecorator((fn) => <StoryScreen>{fn()}</StoryScreen>)
   .add("Behavior", () => (
     <Story>
       <UseCase noPad text="default" usage="The default usage">
@@ -40,4 +40,4 @@ storiesOf("Header", module)
         </View>
       </UseCase>
     </Story>
-  ))
+  ));
