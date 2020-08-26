@@ -20,7 +20,7 @@ export const WelcomeScreen = function WelcomeScreen() {
         <FlatList
           data={globalState.notes}
           renderItem={renderListItem}
-          keyExtractor={(item) => item.title}
+          keyExtractor={(item) => item.id}
         />
       </SafeAreaView>
     </View>
