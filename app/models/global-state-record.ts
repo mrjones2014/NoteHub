@@ -2,6 +2,7 @@ import { Record } from "immutable"
 import GlobalState from "./global-state"
 import NoteRecord from "./note-record"
 import { RecordUtils } from "../utils/record-utils"
+import moment from "moment"
 
 const defaultValues: GlobalState = {
   notes: [],
@@ -18,6 +19,20 @@ export default class GlobalStateRecord extends Record(defaultValues) implements 
     if (params.notes == null) {
       params.notes = []
     }
+
+    // TODO remove this
+    params.notes = [
+      new NoteRecord({
+        lastUpdated: moment().format("L"),
+        title: "Note 1",
+        content: "# Test",
+      }),
+      new NoteRecord({
+        lastUpdated: moment().format("L"),
+        title: "Note 2",
+        content: "# Test 2",
+      }),
+    ]
 
     params.notes = params.notes.map((n) => RecordUtils.ensureRecord(n, NoteRecord))
 
