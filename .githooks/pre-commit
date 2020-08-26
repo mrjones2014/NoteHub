@@ -7,7 +7,7 @@ FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
 echo -e "\x1b[1;35m[.githooks/pre-commit]\x1b[0m Running Prettier on any modified files..."
 
 # Prettify all selected files
-echo "$FILES" | xargs ./node_modules/.bin/prettier --write
+echo "$FILES" | xargs ./node_modules/.bin/prettier --write --config .prettierrc
 
 # Add back the modified/prettified files to staging
 echo "$FILES" | xargs git add
