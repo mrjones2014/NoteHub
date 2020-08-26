@@ -1,5 +1,5 @@
-import NoteRecord from "./note-record"
+import NoteRecord from "./note-record";
 
 export default interface GlobalState {
-  notes: Array<NoteRecord>
+  notes: Array<NoteRecord>;
 }

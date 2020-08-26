@@ -9,60 +9,63 @@
  * The app navigation resides in ./app/navigation, so head over there
  * if you're interested in adding screens and navigators.
  */
-import "./i18n"
-import React, { useState, useEffect, useRef } from "react"
-import { NavigationContainerRef } from "@react-navigation/native"
-import { SafeAreaProvider, initialWindowSafeAreaInsets } from "react-native-safe-area-context"
-import { initFonts } from "./theme/fonts"
-import * as storage from "./utils/storage"
+import "./i18n";
+import React, { useState, useEffect, useRef } from "react";
+import { NavigationContainerRef } from "@react-navigation/native";
+import {
+  SafeAreaProvider,
+  initialWindowSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { initFonts } from "./theme/fonts";
+import * as storage from "./utils/storage";
 import {
   useBackButtonHandler,
   RootNavigator,
   canExit,
   setRootNavigation,
   useNavigationPersistence,
-} from "./navigation"
+} from "./navigation";
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
 // https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
-import { enableScreens } from "react-native-screens"
-enableScreens()
+import { enableScreens } from "react-native-screens";
+enableScreens();
 
 /**
  * Ignore some yellowbox warnings. Some of these are for deprecated functions
  * that we haven't gotten around to replacing yet.
  */
-import { LogBox } from "react-native"
-import GlobalStateRecord from "./models/global-state-record"
-import GlobalStateContext from "./utils/hooks/use-global-state"
-LogBox?.ignoreLogs(["Require cycle:"])
+import { LogBox } from "react-native";
+import GlobalStateRecord from "./models/global-state-record";
+import GlobalStateContext from "./utils/hooks/use-global-state";
+LogBox?.ignoreLogs(["Require cycle:"]);
 
-export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
 
 /**
  * This is the root component of our app.
  */
 function App() {
-  const navigationRef = useRef<NavigationContainerRef>()
+  const navigationRef = useRef<NavigationContainerRef>();
 
-  setRootNavigation(navigationRef)
-  useBackButtonHandler(navigationRef, canExit)
-  const { initialNavigationState, onNavigationStateChange } = useNavigationPersistence(
-    storage,
-    NAVIGATION_PERSISTENCE_KEY,
-  )
+  setRootNavigation(navigationRef);
+  useBackButtonHandler(navigationRef, canExit);
+  const {
+    initialNavigationState,
+    onNavigationStateChange,
+  } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY);
 
-  const [globalState, setGlobalState] = useState(new GlobalStateRecord())
-  const [loading, setLoading] = useState(true)
+  const [globalState, setGlobalState] = useState(new GlobalStateRecord());
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setGlobalState(globalState.refreshFromStorage())
-    setLoading(false)
-  })
+    setGlobalState(globalState.refreshFromStorage());
+    setLoading(false);
+  });
 
   if (loading) {
-    return null
+    return null;
   }
 
   return (
@@ -75,7 +78,7 @@ function App() {
         />
       </SafeAreaProvider>
     </GlobalStateContext.Provider>
-  )
+  );
 }
 
-export default App
+export default App;
