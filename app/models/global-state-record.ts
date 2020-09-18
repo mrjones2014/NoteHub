@@ -34,6 +34,26 @@ export default class GlobalStateRecord
         title: "Note 2",
         content: "# Test 2",
       }),
+      new NoteRecord({
+        lastUpdated: moment().format("L"),
+        title: "Note 3",
+        content: "# Test 3\n\n## Subheading\n\n- this\n- is\n- a bulleted\n- list\n\n## Subheading 2\n\n### Sub-sub-section",
+      }),
+      new NoteRecord({
+        lastUpdated: moment().format("L"),
+        title: "Note 4",
+        content: "# Test 4",
+      }),
+      new NoteRecord({
+        lastUpdated: moment().format("L"),
+        title: "Note 5",
+        content: "# Test 6",
+      }),
+      new NoteRecord({
+        lastUpdated: moment().format("L"),
+        title: "Note 7",
+        content: "# Test 7",
+      }),
     ];
 
     params.notes = params.notes.map((n) =>

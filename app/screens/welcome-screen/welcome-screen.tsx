@@ -1,28 +1,77 @@
 import React from "react";
-import { View, ViewStyle, FlatList, ListRenderItemInfo } from "react-native";
+import { View, ViewStyle, ListRenderItemInfo, StyleSheet, ViewProps } from "react-native";
 import NoteRecord from "../../models/note-record";
-import { Text } from "../../components";
 import { useGlobalState } from "../../utils/hooks/use-global-state";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, Layout, List, Text } from "@ui-kitten/components";
+import Markdown from "../../components/markdown";
+import Styles from "../../styles";
 
-const FULL: ViewStyle = { flex: 1 };
 
 export const WelcomeScreen = function WelcomeScreen() {
   const { globalState } = useGlobalState();
 
-  const renderListItem = (listRenderItem: ListRenderItemInfo<NoteRecord>) => (
-    <Text text={listRenderItem.item.title} key={listRenderItem.index} />
+  const renderItemHeader = (headerProps: ViewProps, item: ListRenderItemInfo<NoteRecord>) => (
+    <View {...headerProps}>
+      <Text category="h6">
+        {item.item.title}
+      </Text>
+    </View>
+  );
+
+  const renderItemFooter = (footerProps: ViewProps, item: ListRenderItemInfo<NoteRecord>) => (
+    <Text {...footerProps}>
+      {item.item.formatLastUpdatedText()}
+    </Text>
+  );
+
+  const renderItem = (item: ListRenderItemInfo<NoteRecord>) => (
+    <Card
+      style={item.index === globalState.notes.length - 1 ? styles.lastItem : styles.item}
+      status="basic"
+      header={(headerProps: ViewProps) => renderItemHeader(headerProps, item)}
+      footer={(footerProps: ViewProps) => renderItemFooter(footerProps, item)}
+    >
+      <View style={styles.markdownContainer}>
+        <Markdown>
+          {item.item.content}
+        </Markdown>
+      </View>
+    </Card>
   );
 
   return (
-    <View style={FULL}>
-      <SafeAreaView>
-        <FlatList
-          data={globalState.notes}
-          renderItem={renderListItem}
-          keyExtractor={(item) => item.id}
-        />
-      </SafeAreaView>
-    </View>
+    <Layout style={styles.mainView}>
+      <List
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        data={globalState.notes}
+        renderItem={renderItem}
+      />
+    </Layout>
   );
 };
+
+const styles = StyleSheet.create<Styles>({
+  mainView: {
+    flex: 1,
+  },
+  container: {
+    paddingTop: 60,
+    paddingBottom: 600,
+  },
+  contentContainer: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  markdownContainer: {
+    maxHeight: 100,
+    overflow: "hidden",
+  },
+  item: {
+    marginVertical: 4,
+  },
+  lastItem: {
+    marginTop: 4,
+    marginBottom: 150,
+  }
+});

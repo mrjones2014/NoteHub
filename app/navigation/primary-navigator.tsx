@@ -7,6 +7,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { WelcomeScreen, DemoScreen } from "../screens";
+import GlobalContext from "../global-context";
 
 export type PrimaryParamList = {
   welcome: undefined;
@@ -18,15 +19,17 @@ const Stack = createStackNavigator<PrimaryParamList>();
 
 export function PrimaryNavigator() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-      }}
-    >
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
-      <Stack.Screen name="demo" component={DemoScreen} />
-    </Stack.Navigator>
+    <GlobalContext>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: true,
+        }}
+      >
+        <Stack.Screen name="welcome" component={WelcomeScreen} />
+        <Stack.Screen name="demo" component={DemoScreen} />
+      </Stack.Navigator>
+    </GlobalContext>
   );
 }
 

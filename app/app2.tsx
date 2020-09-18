@@ -10,12 +10,8 @@
  * if you're interested in adding screens and navigators.
  */
 import "./i18n";
-import React, { useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainerRef } from "@react-navigation/native";
-import {
-  SafeAreaProvider,
-  initialWindowSafeAreaInsets,
-} from "react-native-safe-area-context";
 import * as storage from "./utils/storage";
 import {
   useBackButtonHandler,
@@ -25,19 +21,17 @@ import {
   useNavigationPersistence,
 } from "./navigation";
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
-
-// This puts screens in a native ViewController or Activity. If you want fully native
-// stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
-// https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
-import { enableScreens } from "react-native-screens";
-enableScreens();
+import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
 /**
  * Ignore some yellowbox warnings. Some of these are for deprecated functions
  * that we haven't gotten around to replacing yet.
  */
 import { LogBox } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import GlobalStateRecord from "./models/global-state-record";
+import { useRef } from "react";
+import GlobalStateContext from "./utils/hooks/use-global-state";
 LogBox?.ignoreLogs(["Require cycle:"]);
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
@@ -47,6 +41,7 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
  */
 function App() {
   console.log("App.tsx component called...")
+
   const navigationRef = useRef<NavigationContainerRef>();
 
   setRootNavigation(navigationRef);
@@ -56,15 +51,23 @@ function App() {
     onNavigationStateChange,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY);
 
+  const [globalState, setGlobalState] = useState(new GlobalStateRecord());
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setGlobalState(globalState.refreshFromStorage());
+    setLoading(false);
+  });
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <ApplicationProvider {...eva} theme={eva.dark}>
-        <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
-          <RootNavigator
-            ref={navigationRef}
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
-          />
-        </SafeAreaProvider>
+      <SafeAreaView>
+        <RootNavigator initialState={initialNavigationState} onStateChange={onNavigationStateChange}/>
+      </SafeAreaView>
     </ApplicationProvider>
   );
 }

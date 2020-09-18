@@ -1,6 +1,6 @@
 import Note from "./note";
 import { Record } from "immutable";
-import uuid from "uuid";
+import moment from "moment";
 
 const defaultValues: Note = {
   id: "",
@@ -18,13 +18,24 @@ export default class NoteRecord extends Record(defaultValues) implements Note {
     params = Object.assign({}, defaultValues, params);
 
     if (params.id == null || params.id === "") {
-      params.id == uuid.v4();
+      params.id == Math.random().toString();
     }
+
+    console.log(params);
 
     super(params);
   }
 
   public with(values: Partial<Note>): NoteRecord {
     return new NoteRecord(Object.assign(this.toJS(), values));
+  }
+
+  public formatLastUpdatedText(): string {
+    let date = moment(this.lastUpdated);
+    if (!date.isValid()) {
+      date = moment();
+    }
+
+    return `Last updated ${date.format("L")}`;
   }
 }
