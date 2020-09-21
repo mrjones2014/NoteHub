@@ -1,13 +1,15 @@
 import React from "react";
-import { View, ViewStyle, ListRenderItemInfo, StyleSheet, ViewProps } from "react-native";
-import NoteRecord from "../../models/note-record";
-import { useGlobalState } from "../../utils/hooks/use-global-state";
+import { View, ListRenderItemInfo, StyleSheet, ViewProps } from "react-native";
+import NoteRecord from "../models/note-record";
+import { useGlobalState } from "../utils/hooks/use-global-state";
 import { Card, Layout, List, Text } from "@ui-kitten/components";
-import Markdown from "../../components/markdown";
-import Styles from "../../styles";
+import Markdown from "../components/markdown";
+import Styles from "../styles";
+import { PrimaryParamList } from "../navigation";
+import { StackScreenProps } from "@react-navigation/stack";
 
 
-export const WelcomeScreen = function WelcomeScreen() {
+export const WelcomeScreen = function WelcomeScreen(props: StackScreenProps<PrimaryParamList, "welcome">) {
   const { globalState } = useGlobalState();
 
   const renderItemHeader = (headerProps: ViewProps, item: ListRenderItemInfo<NoteRecord>) => (
@@ -26,6 +28,7 @@ export const WelcomeScreen = function WelcomeScreen() {
 
   const renderItem = (item: ListRenderItemInfo<NoteRecord>) => (
     <Card
+      onPress={() => props.navigation.navigate("viewNote", { id: item.item.id })}
       style={item.index === globalState.notes.length - 1 ? styles.lastItem : styles.item}
       status="basic"
       header={(headerProps: ViewProps) => renderItemHeader(headerProps, item)}

@@ -9,7 +9,6 @@
  * The app navigation resides in ./app/navigation, so head over there
  * if you're interested in adding screens and navigators.
  */
-import "./i18n";
 import React, { useRef } from "react";
 import { NavigationContainerRef } from "@react-navigation/native";
 import {
@@ -38,6 +37,7 @@ enableScreens();
  * that we haven't gotten around to replacing yet.
  */
 import { LogBox } from "react-native";
+import GlobalContext from "./global-context";
 LogBox?.ignoreLogs(["Require cycle:"]);
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
@@ -46,7 +46,6 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
  * This is the root component of our app.
  */
 function App() {
-  console.log("App.tsx component called...")
   const navigationRef = useRef<NavigationContainerRef>();
 
   setRootNavigation(navigationRef);
@@ -57,7 +56,8 @@ function App() {
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY);
 
   return (
-    <ApplicationProvider {...eva} theme={eva.dark}>
+    <GlobalContext>
+      <ApplicationProvider {...eva} theme={eva.dark}>
         <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
           <RootNavigator
             ref={navigationRef}
@@ -65,7 +65,8 @@ function App() {
             onStateChange={onNavigationStateChange}
           />
         </SafeAreaProvider>
-    </ApplicationProvider>
+      </ApplicationProvider>
+    </GlobalContext>
   );
 }
 

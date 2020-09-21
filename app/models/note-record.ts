@@ -1,6 +1,8 @@
 import Note from "./note";
 import { Record } from "immutable";
 import moment from "moment";
+import { StringUtils } from "andculturecode-javascript-core";
+import uuid from "../utils/uuid";
 
 const defaultValues: Note = {
   id: "",
@@ -17,11 +19,9 @@ export default class NoteRecord extends Record(defaultValues) implements Note {
 
     params = Object.assign({}, defaultValues, params);
 
-    if (params.id == null || params.id === "") {
-      params.id == Math.random().toString();
+    if (StringUtils.isEmpty(params.id)) {
+      params.id = uuid();
     }
-
-    console.log(params);
 
     super(params);
   }

@@ -21,26 +21,12 @@ The Ignite Bowser boilerplate project's structure will look similar to this:
 ignite-project
 ├── app
 │   ├── components
-│   ├── i18n
 │   ├── utils
 │   ├── models
 │   ├── navigation
 │   ├── screens
 │   ├── services
-│   ├── theme
 │   ├── app.tsx
-├── storybook
-│   ├── views
-│   ├── index.ts
-│   ├── storybook-registry.ts
-│   ├── storybook.ts
-├── test
-│   ├── __snapshots__
-│   ├── storyshots.test.ts.snap
-│   ├── mock-i18n.ts
-│   ├── mock-reactotron.ts
-│   ├── setup.ts
-│   ├── storyshots.test.ts
 ├── README.md
 ├── android
 │   ├── app
@@ -75,21 +61,16 @@ The inside of the src directory looks similar to the following:
 ```
 app
 │── components
-│── i18n
 ├── models
 ├── navigation
 ├── screens
 ├── services
-├── theme
 ├── utils
 └── app.tsx
 ```
 
 **components**
 This is where your React components will live. Each component will have a directory containing the `.tsx` file, along with a story file, and optionally `.presets`, and `.props` files for larger components. The app will come with some commonly used components like Button.
-
-**i18n**
-This is where your translations will live if you are using `react-native-i18n`.
 
 **models**
 This is where domain models live.
@@ -102,9 +83,6 @@ This is where your screen components will live. A screen is a React component wh
 
 **services**
 Any services that interface with the outside world will live here (think REST APIs, Push Notifications, etc.).
-
-**theme**
-Here lives the theme for your application, including spacing, colors, and typography.
 
 **utils**
 This is a great place to put miscellaneous helpers and utilities. Things like date helpers, formatters, etc. are often found here. However, it should only be used for things that are truely shared across your application. If a helper or utility is only used by a specific component or model, consider co-locating your helper with that component or model.

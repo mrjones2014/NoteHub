@@ -1,8 +1,8 @@
 import { Record } from "immutable";
 import GlobalState from "./global-state";
 import NoteRecord from "./note-record";
-import { RecordUtils } from "../utils/record-utils";
 import moment from "moment";
+import { RecordUtils } from "andculturecode-javascript-core";
 
 const defaultValues: GlobalState = {
   notes: [],
@@ -37,7 +37,7 @@ export default class GlobalStateRecord
       new NoteRecord({
         lastUpdated: moment().format("L"),
         title: "Note 3",
-        content: "# Test 3\n\n## Subheading\n\n- this\n- is\n- a bulleted\n- list\n\n## Subheading 2\n\n### Sub-sub-section",
+        content: "# Test 3\n\n## Subheading\n\n- this\n- is\n- a bulleted\n- list\n\n## Subheading 2\n\n### Sub-sub-section\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list",
       }),
       new NoteRecord({
         lastUpdated: moment().format("L"),
