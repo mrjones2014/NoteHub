@@ -1,8 +1,8 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { Button, Card, Divider, Icon, IconProps, Layout, Text } from "@ui-kitten/components";
+import { Button, Divider, Icon, IconProps, Layout, Text } from "@ui-kitten/components";
 import { StringUtils } from "andculturecode-javascript-core";
 import React, { useMemo } from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Markdown from "../components/markdown";
@@ -14,7 +14,7 @@ import { useGlobalState } from "../utils/hooks/use-global-state";
 export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<PrimaryParamList, "viewNote">) {
     const { globalState } = useGlobalState();
     const noteId = props.route.params?.id;
-    
+
     const note = useMemo(() => {
         if (StringUtils.isEmpty(noteId)) {
             return undefined;
@@ -23,6 +23,8 @@ export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<Pr
         const note = globalState.notes.find((n: NoteRecord) => n.id === noteId);
         return note;
     }, [noteId]);
+
+    const navigateToNote = () => props.navigation.navigate("editNote", { id: note.id });
 
     const renderPencilIcon = (props: IconProps) => (
         <Icon
@@ -45,7 +47,11 @@ export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<Pr
                 <ScrollView>
                     <View style={styles.titleContainer}>
                         <Text category="h1" style={styles.title}>{note.title}</Text>
-                        <Button accessoryLeft={renderPencilIcon} style={styles.editButton}/>
+                        <Button
+                            accessoryLeft={renderPencilIcon}
+                            onPress={navigateToNote}
+                            style={styles.editButton}
+                        />
                     </View>
                     <Divider style={styles.divider}/>
                     <Markdown>{note.content}</Markdown>

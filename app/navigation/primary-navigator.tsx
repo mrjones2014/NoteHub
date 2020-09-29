@@ -8,10 +8,14 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { WelcomeScreen, ViewNoteScreen } from "../screens";
 import GlobalContext from "../global-context";
+import { EditNoteScreen } from "../screens/edit-note-screen";
 
 export type PrimaryParamList = {
   welcome: undefined;
   viewNote: {
+    id: string;
+  };
+  editNote: {
     id: string;
   };
 };
@@ -27,8 +31,9 @@ export function PrimaryNavigator() {
         gestureEnabled: true,
       }}
     >
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
-      <Stack.Screen name="viewNote" component={ViewNoteScreen} />
+      <Stack.Screen name="welcome" component={WelcomeScreen}/>
+      <Stack.Screen name="viewNote" component={ViewNoteScreen}/>
+      <Stack.Screen name="editNote" component={EditNoteScreen}/>
     </Stack.Navigator>
   );
 }
