@@ -24,7 +24,8 @@ import {
   useNavigationPersistence,
 } from "./navigation";
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -57,6 +58,7 @@ function App() {
 
   return (
     <GlobalContext>
+      <IconRegistry icons={EvaIconsPack}/>
       <ApplicationProvider {...eva} theme={eva.dark}>
         <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
           <RootNavigator

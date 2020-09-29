@@ -36,7 +36,7 @@ export default class GlobalStateRecord
       }),
       new NoteRecord({
         lastUpdated: moment().format("L"),
-        title: "Note 3",
+        title: "Note 3 with a really long title",
         content: "# Test 3\n\n## Subheading\n\n- this\n- is\n- a bulleted\n- list\n\n## Subheading 2\n\n### Sub-sub-section\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list",
       }),
       new NoteRecord({

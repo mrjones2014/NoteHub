@@ -1,8 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { Card, Divider, Layout, Text } from "@ui-kitten/components";
+import { Button, Card, Divider, Icon, IconProps, Layout, Text } from "@ui-kitten/components";
 import { StringUtils } from "andculturecode-javascript-core";
 import React, { useMemo } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Markdown from "../components/markdown";
 import NoteRecord from "../models/note-record";
@@ -23,6 +24,13 @@ export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<Pr
         return note;
     }, [noteId]);
 
+    const renderPencilIcon = (props: IconProps) => (
+        <Icon
+            pack=""
+            name="edit-2-outline"
+            {...props}/>
+    );
+
     if (note == null) {
         return (
             <Layout style={styles.mainView}>
@@ -34,9 +42,14 @@ export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<Pr
     return (
         <Layout style={styles.mainView}>
             <SafeAreaView style={styles.scrollable}>
-                <Text category="h1">{note.title}</Text>
-                <Divider style={styles.divider}/>
-                <Markdown>{note.content}</Markdown>
+                <ScrollView>
+                    <View style={styles.titleContainer}>
+                        <Text category="h1" style={styles.title}>{note.title}</Text>
+                        <Button accessoryLeft={renderPencilIcon} style={styles.editButton}/>
+                    </View>
+                    <Divider style={styles.divider}/>
+                    <Markdown>{note.content}</Markdown>
+                </ScrollView>
             </SafeAreaView>
         </Layout>
     );
@@ -46,13 +59,23 @@ const styles = StyleSheet.create<Styles>({
     mainView: {
         flex: 1,
         paddingTop: 10,
-        paddingBottom: 15,
         paddingLeft: 20,
         paddingRight: 20,
-        overflow: "scroll",
+    },
+    titleContainer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    title: {
+        maxWidth: 300,
+    },
+    editButton: {
+        maxHeight: 32,
     },
     scrollable: {
-        overflow: "scroll"
+        overflow: "scroll",
+        paddingBottom: 15,
     },
     divider: {
         marginBottom: 10,
