@@ -19,15 +19,15 @@ export default class NoteRecord extends Record(defaultValues) implements Note {
 
     params = Object.assign({}, defaultValues, params);
 
-    if (StringUtils.isEmpty(params.id)) {
-      params.id = uuid();
-    }
-
     super(params);
   }
 
   public with(values: Partial<Note>): NoteRecord {
     return new NoteRecord(Object.assign(this.toJS(), values));
+  }
+
+  public isPersisted(): boolean {
+    return StringUtils.hasValue(this.id);
   }
 
   public formatLastUpdatedText(): string {
@@ -37,5 +37,13 @@ export default class NoteRecord extends Record(defaultValues) implements Note {
     }
 
     return `Last updated ${date.format("L")}`;
+  }
+
+  public withGeneratedId(): NoteRecord {
+    if (StringUtils.hasValue(this.id)) {
+      return this.with({});
+    }
+
+    return this.with({ id: uuid() });
   }
 }

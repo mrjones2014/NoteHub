@@ -1,8 +1,11 @@
 import { Record } from "immutable";
 import GlobalState from "./global-state";
 import NoteRecord from "./note-record";
-import moment from "moment";
-import { RecordUtils } from "andculturecode-javascript-core";
+import { RecordUtils, StringUtils } from "andculturecode-javascript-core";
+import SortNotesAlphabetically from "../utils/sort-comparators/sort-notes-alphabetically";
+import SyncStorage from "sync-storage";
+
+const STORAGE_KEY = "_NOTEHUB_GLOBAL_STATE_STORAGE_KEY_";
 
 const defaultValues: GlobalState = {
   notes: [],
@@ -22,39 +25,7 @@ export default class GlobalStateRecord
       params.notes = [];
     }
 
-    // TODO remove this
-    params.notes = [
-      new NoteRecord({
-        lastUpdated: moment().format("L"),
-        title: "Note 1",
-        content: "# Test",
-      }),
-      new NoteRecord({
-        lastUpdated: moment().format("L"),
-        title: "Note 2",
-        content: "# Test 2",
-      }),
-      new NoteRecord({
-        lastUpdated: moment().format("L"),
-        title: "Note 3 with a really long title",
-        content: "# Test 3\n\n## Subheading\n\n- this\n- is\n- a bulleted\n- list\n\n## Subheading 2\n\n### Sub-sub-section\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list\n\n- this\n- is\n- a bulleted\n- list",
-      }),
-      new NoteRecord({
-        lastUpdated: moment().format("L"),
-        title: "Note 4",
-        content: "# Test 4",
-      }),
-      new NoteRecord({
-        lastUpdated: moment().format("L"),
-        title: "Note 5",
-        content: "# Test 6",
-      }),
-      new NoteRecord({
-        lastUpdated: moment().format("L"),
-        title: "Note 7",
-        content: "# Test 7",
-      }),
-    ];
+    params.notes = params.notes.sort(SortNotesAlphabetically);
 
     params.notes = params.notes.map((n) =>
       RecordUtils.ensureRecord(n, NoteRecord)
@@ -67,13 +38,29 @@ export default class GlobalStateRecord
     return new GlobalStateRecord(Object.assign(this.toJS(), values));
   }
 
+  public getNotesWithBlankFirstValue(): Array<NoteRecord> {
+    return [new NoteRecord(), ...this.notes];
+  }
+
+  public addNewNote(note: NoteRecord): GlobalStateRecord {
+    return this.with({ notes: [note, ...this.notes] });
+  }
+
   public refreshFromStorage(): GlobalStateRecord {
-    // TODO actually implement this
-    return new GlobalStateRecord(this.toJS());
+    const storageString = SyncStorage.get(STORAGE_KEY);
+    if (StringUtils.hasValue(storageString)) {
+      return new GlobalStateRecord(JSON.parse(storageString));
+    }
+
+    return new GlobalStateRecord();
   }
 
   public persistToStorage(): boolean {
-    // TODO actually imlpement this
-    return false;
+    const serialized = this.toJS();
+    serialized.notes = serialized.notes.map((n: NoteRecord) => Record.isRecord(n) ? n.toJS() : n);
+    serialized.notes = serialized.notes.filter((n: any) => StringUtils.hasValue(n.id));
+    const storageString = JSON.stringify(serialized);
+    SyncStorage.set(STORAGE_KEY, storageString);
+    return true;
   }
 }
