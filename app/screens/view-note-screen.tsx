@@ -15,19 +15,9 @@ export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<Pr
     const { globalState } = useGlobalState();
     const noteId = props.route.params?.id;
 
-    const { navigation } = props;
-
-    // if we came here from edit, we still want
-    // the "back" action to take us to the note list.
-    // useEffect(() => {
-    //     const backHandler = () => navigation.navigate("welcome");
-    //     navigation.addListener("beforeRemove", backHandler);
-    //     navigation.removeListener("beforeRemove", backHandler)
-    // }, [navigation])
-
     const note = StringUtils.isEmpty(noteId) ? undefined : globalState.notes.find((n: NoteRecord) => n.id === noteId);
 
-    const navigateToNote = () => props.navigation.navigate("editNote", { id: note.id });
+    const navigateToNote = () => props.navigation.replace("editNote", { id: note.id });
 
     const renderPencilIcon = (props: IconProps) => (
         <Icon

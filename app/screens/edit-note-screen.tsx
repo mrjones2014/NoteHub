@@ -67,7 +67,7 @@ export const EditNoteScreen = function EditNoteScreen(props: StackScreenProps<Pr
                 toast.current.show("Failed to save note.");
                 return;
             }
-            props.navigation.navigate("viewNote", { id: noteWithId.id });
+            props.navigation.replace("viewNote", { id: noteWithId.id });
             return;
         }
 
@@ -78,7 +78,7 @@ export const EditNoteScreen = function EditNoteScreen(props: StackScreenProps<Pr
             toast.current.show("Failed to save note.");
             return;
         }
-        props.navigation.navigate("viewNote", { id: noteWithId.id });
+        props.navigation.replace("viewNote", { id: noteWithId.id });
     };
 
     const editorStyle = keyboardOpen ?
