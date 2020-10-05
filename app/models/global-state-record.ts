@@ -3,9 +3,9 @@ import GlobalState from "./global-state";
 import NoteRecord from "./note-record";
 import { RecordUtils, StringUtils } from "andculturecode-javascript-core";
 import SortNotesAlphabetically from "../utils/sort-comparators/sort-notes-alphabetically";
-import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-community/async-storage";
 
-const STORAGE_KEY = "_NOTEHUB_GLOBAL_STATE_STORAGE_KEY_";
+const STORAGE_KEY = "@NOTEHUB_GLOBAL_STATE_STORAGE_KEY";
 
 const defaultValues: GlobalState = {
   notes: [],
@@ -46,21 +46,29 @@ export default class GlobalStateRecord
     return this.with({ notes: [note, ...this.notes] });
   }
 
-  public refreshFromStorage(): GlobalStateRecord {
-    const storageString = SyncStorage.get(STORAGE_KEY);
-    if (StringUtils.hasValue(storageString)) {
-      return new GlobalStateRecord(JSON.parse(storageString));
-    }
+  public async refreshFromStorage(): Promise<GlobalStateRecord | undefined> {
+    try {
+      const storageString = await AsyncStorage.getItem(STORAGE_KEY);
+      if (StringUtils.hasValue(storageString)) {
+        return new GlobalStateRecord(JSON.parse(storageString));
+      }
 
-    return new GlobalStateRecord();
+      return new GlobalStateRecord();
+    } catch (e) {
+      return undefined;
+    }
   }
 
-  public persistToStorage(): boolean {
-    const serialized = this.toJS();
-    serialized.notes = serialized.notes.map((n: NoteRecord) => Record.isRecord(n) ? n.toJS() : n);
-    serialized.notes = serialized.notes.filter((n: any) => StringUtils.hasValue(n.id));
-    const storageString = JSON.stringify(serialized);
-    SyncStorage.set(STORAGE_KEY, storageString);
-    return true;
+  public async persistToStorage(): Promise<boolean> {
+    try {
+      const serialized = this.toJS();
+      serialized.notes = serialized.notes.map((n: NoteRecord) => Record.isRecord(n) ? n.toJS() : n);
+      serialized.notes = serialized.notes.filter((n: any) => StringUtils.hasValue(n.id));
+      const storageString = JSON.stringify(serialized);
+      await AsyncStorage.setItem(STORAGE_KEY, storageString);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

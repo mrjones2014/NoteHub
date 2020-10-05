@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { Button, Divider, Icon, IconProps, Layout, Text } from "@ui-kitten/components";
 import { StringUtils } from "andculturecode-javascript-core";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,14 +15,17 @@ export const ViewNoteScreen = function ViewNoteScreen(props: StackScreenProps<Pr
     const { globalState } = useGlobalState();
     const noteId = props.route.params?.id;
 
-    const note = useMemo(() => {
-        if (StringUtils.isEmpty(noteId)) {
-            return undefined;
-        }
+    const { navigation } = props;
 
-        const note = globalState.notes.find((n: NoteRecord) => n.id === noteId);
-        return note;
-    }, [noteId]);
+    // if we came here from edit, we still want
+    // the "back" action to take us to the note list.
+    // useEffect(() => {
+    //     const backHandler = () => navigation.navigate("welcome");
+    //     navigation.addListener("beforeRemove", backHandler);
+    //     navigation.removeListener("beforeRemove", backHandler)
+    // }, [navigation])
+
+    const note = StringUtils.isEmpty(noteId) ? undefined : globalState.notes.find((n: NoteRecord) => n.id === noteId);
 
     const navigateToNote = () => props.navigation.navigate("editNote", { id: note.id });
 

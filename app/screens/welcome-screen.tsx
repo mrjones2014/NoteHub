@@ -1,22 +1,70 @@
-import React from "react";
-import { View, ListRenderItemInfo, StyleSheet, ViewProps } from "react-native";
+import React, { useRef } from "react";
+import { View, ListRenderItemInfo, StyleSheet, ViewProps, Alert } from "react-native";
 import NoteRecord from "../models/note-record";
 import { useGlobalState } from "../utils/hooks/use-global-state";
-import { Button, Card, Layout, List, Text } from "@ui-kitten/components";
+import { Button, Card, Icon, IconProps, Layout, List, Text } from "@ui-kitten/components";
 import Markdown from "../components/markdown";
 import Styles from "../styles";
 import { PrimaryParamList } from "../navigation";
 import { StackScreenProps } from "@react-navigation/stack";
+import { CollectionUtils } from "andculturecode-javascript-core";
+import Toast from "@rimiti/react-native-toastify";
 
 
 export const WelcomeScreen = function WelcomeScreen(props: StackScreenProps<PrimaryParamList, "welcome">) {
-  const { globalState } = useGlobalState();
+  const { globalState, setGlobalState } = useGlobalState();
+
+  const toast = useRef<Toast>();
+
+  const deleteNote = async (noteId: string) => {
+    Alert.alert("Delete Note", "Are you sure you want to delete this note?", [
+      {
+        text: "Cancel",
+        style: "cancel"
+      },
+      {
+        text: "Delete",
+        onPress: async () => {
+          const idx = globalState.notes.findIndex((n: NoteRecord) => n.id === noteId);
+          if (idx < 0) {
+            return;
+          }
+
+          const newState = globalState.with({
+            notes: CollectionUtils.removeElementAt(
+              globalState.notes,
+              idx
+            )
+          });
+          const saveSuccess = await newState.persistToStorage();
+          if (saveSuccess) {
+            setGlobalState(newState);
+            return;
+          }
+
+          toast.current.show("Failed to delete note.", 2000);
+        },
+        style: "destructive"
+      }
+    ],
+    { cancelable: false })
+  };
+
+  const renderTrashIcon = (props: IconProps) => (
+    <Icon
+        pack=""
+        name="trash-2-outline"
+        {...props}/>
+  );
 
   const renderItemHeader = (headerProps: ViewProps, item: ListRenderItemInfo<NoteRecord>) => (
     <View {...headerProps}>
-      <Text category="h6">
-        {item.item.title}
-      </Text>
+      <View style={styles.cardHeader}>
+        <Text category="h6" style={styles.cardHeaderTitle}>
+          {item.item.title}
+        </Text>
+        <Button onPress={() => deleteNote(item.item.id)} status="danger" accessoryLeft={renderTrashIcon} style={styles.deleteButton}/>
+      </View>
     </View>
   );
 
@@ -31,7 +79,7 @@ export const WelcomeScreen = function WelcomeScreen(props: StackScreenProps<Prim
       return (
         <Card
           onPress={() => props.navigation.navigate("viewNote", { id: item.item.id })}
-          style={item.index === globalState.notes.length - 1 ? styles.lastItem : styles.item}
+          style={item.index === globalState.notes.length ? styles.lastItem : styles.item}
           status="basic"
           header={(headerProps: ViewProps) => renderItemHeader(headerProps, item)}
           footer={(footerProps: ViewProps) => renderItemFooter(footerProps, item)}
@@ -62,6 +110,7 @@ export const WelcomeScreen = function WelcomeScreen(props: StackScreenProps<Prim
         data={globalState.getNotesWithBlankFirstValue()}
         renderItem={renderItem}
       />
+      <Toast ref={toast}/>
     </Layout>
   );
 };
@@ -88,5 +137,16 @@ const styles = StyleSheet.create<Styles>({
   lastItem: {
     marginTop: 4,
     marginBottom: 150,
+  },
+  cardHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "row"
+  },
+  cardHeaderTitle: {
+    maxWidth: "80%"
+  },
+  deleteButton: {
+    height: 4
   }
 });

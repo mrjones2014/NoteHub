@@ -41,7 +41,7 @@ export const EditNoteScreen = function EditNoteScreen(props: StackScreenProps<Pr
         Keyboard.dismiss();
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         Keyboard.dismiss();
 
         // validate
@@ -62,14 +62,22 @@ export const EditNoteScreen = function EditNoteScreen(props: StackScreenProps<Pr
                 )
             });
             setGlobalState(newGlobalState);
-            newGlobalState.persistToStorage();
+            const saveSuccess = await newGlobalState.persistToStorage();
+            if (!saveSuccess) {
+                toast.current.show("Failed to save note.");
+                return;
+            }
             props.navigation.navigate("viewNote", { id: noteWithId.id });
             return;
         }
 
         const newGlobalState = globalState.addNewNote(noteWithId);
         setGlobalState(newGlobalState);
-        newGlobalState.persistToStorage();
+        const saveSuccess = await newGlobalState.persistToStorage();
+        if (!saveSuccess) {
+            toast.current.show("Failed to save note.");
+            return;
+        }
         props.navigation.navigate("viewNote", { id: noteWithId.id });
     };
 
